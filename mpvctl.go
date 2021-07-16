@@ -8,7 +8,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/getlantern/systray"
 	"gopkg.in/natefinch/npipe.v2"
 )
 
@@ -154,7 +153,6 @@ func main() {
 		}
 	case "start":
 		run()
-		systray.Run(onReady, onExit)
 	default:
 		fmt.Printf("%s not supported\n", args[0])
 	}

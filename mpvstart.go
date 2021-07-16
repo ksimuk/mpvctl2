@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"syscall"
 	"time"
+
+	"github.com/getlantern/systray"
 )
 
 var cmd *exec.Cmd
@@ -38,6 +40,7 @@ func run() {
 		os.Exit(1) // already running
 	}
 	go listen(listener)
+	go systray.Run(onReady, onExit)
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 	go func() {
@@ -54,12 +57,12 @@ func run() {
 	}
 }
 
-func kill() error {
-	if cmd == nil {
-		return nil
+func kill() {
+	if cmd != nil {
+		kill := exec.Command("TASKKILL", "/T", "/F", "/PID", strconv.Itoa(cmd.Process.Pid))
+		kill.Stderr = os.Stderr
+		kill.Stdout = os.Stdout
+		kill.Run()
 	}
-	kill := exec.Command("TASKKILL", "/T", "/F", "/PID", strconv.Itoa(cmd.Process.Pid))
-	kill.Stderr = os.Stderr
-	kill.Stdout = os.Stdout
-	return kill.Run()
+	os.Exit(0)
 }

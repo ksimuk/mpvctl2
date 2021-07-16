@@ -13,7 +13,6 @@ func onReady() {
 	mQuit := systray.AddMenuItem("Quit", "Quit")
 
 	// Sets the icon of a menu item. Only available on Mac and Windows.
-	mQuit.SetIcon(icon.Data)
 	go func() {
 		<-mQuit.ClickedCh
 		systray.Quit()
