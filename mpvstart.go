@@ -14,6 +14,7 @@ import (
 )
 
 var cmd *exec.Cmd
+var shouldRun bool = true
 
 const (
 	INSTANCE_PORT = 9293
@@ -46,11 +47,13 @@ func run() {
 	go func() {
 		<-sigCh
 		kill()
-		os.Exit(1)
 	}()
 
 	for {
-		cmd := exec.Command(`C:\Users\maxim\scoop\apps\mpv\current\mpv.exe`, `--profile=service-windows`)
+		if !shouldRun {
+			break
+		}
+		cmd = exec.Command(`C:\Users\maxim\scoop\apps\mpv\current\mpv.exe`, `--profile=service-windows`)
 		cmd.Run()
 		cmd.Wait()
 		time.Sleep(5 * time.Second)
@@ -58,11 +61,12 @@ func run() {
 }
 
 func kill() {
+	shouldRun = false
+	fmt.Println(cmd)
 	if cmd != nil {
 		kill := exec.Command("TASKKILL", "/T", "/F", "/PID", strconv.Itoa(cmd.Process.Pid))
-		kill.Stderr = os.Stderr
-		kill.Stdout = os.Stdout
 		kill.Run()
+		kill.Wait()
 	}
 	os.Exit(0)
 }

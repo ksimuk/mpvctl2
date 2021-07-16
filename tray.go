@@ -2,11 +2,13 @@ package main
 
 import (
 	"mpvctl/icon"
+	"time"
 
 	"github.com/getlantern/systray"
 )
 
 func onReady() {
+	time.Sleep(500 * time.Millisecond) // https://github.com/getlantern/systray/issues/164
 	systray.SetIcon(icon.Data)
 	systray.SetTitle("MpvCtl")
 	systray.SetTooltip("MPVCTL")
