@@ -21,7 +21,7 @@ type message struct {
 type playlistItem struct {
 	Filename string `json:"filename"`
 	Id       int    `json:"id"`
-	Current  bool   `json:"current"`
+	Current  bool   `json:"current,omitempty"`
 }
 
 type response struct {
