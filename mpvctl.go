@@ -136,7 +136,11 @@ func main() {
 		check(err)
 		playlist := getPlaylist(*res)
 		for _, item := range playlist {
-			fmt.Printf("%d. %s\n", item.Id, item.Filename)
+			current := " "
+			if item.Current {
+				current = ">"
+			}
+			fmt.Printf("%s %d. %s\n", current, item.Id, item.Filename)
 		}
 	case "save-playlist":
 		res, err := sendMessage([]string{"get_property", "playlist"})
