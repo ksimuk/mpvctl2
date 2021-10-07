@@ -53,7 +53,9 @@ func run() {
 		if !shouldRun {
 			break
 		}
-		cmd = exec.Command(`C:\Users\maxim\scoop\apps\mpv\current\mpv.exe`, `--profile=service-windows`)
+		pathMpv, _ := exec.LookPath("mpv.exe")
+		fmt.Printf("Path %s", pathMpv)
+		cmd = exec.Command(pathMpv, `--profile=service-windows`)
 		cmd.Run()
 		cmd.Wait()
 		time.Sleep(5 * time.Second)
