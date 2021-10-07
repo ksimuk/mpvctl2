@@ -56,6 +56,8 @@ func run() {
 		pathMpv, _ := exec.LookPath("mpv.exe")
 		fmt.Printf("Path %s", pathMpv)
 		cmd = exec.Command(pathMpv, `--profile=service-windows`)
+
+		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 		cmd.Run()
 		cmd.Wait()
 		time.Sleep(5 * time.Second)
