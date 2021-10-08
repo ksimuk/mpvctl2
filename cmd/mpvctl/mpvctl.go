@@ -89,6 +89,10 @@ func loadPlaylist() []string {
 	return strings.Split(string(file), "\n")
 }
 
+func run() {
+	fmt.Println("WIP")
+}
+
 func main() {
 	args := os.Args[1:]
 	switch args[0] {
