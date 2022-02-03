@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net"
 	"os"
 	"strings"
 )
@@ -30,9 +29,6 @@ func getPlaylist(res response) []playlistItem {
 	var playlist []playlistItem
 	json.Unmarshal([]byte(data), &playlist)
 	return playlist
-}
-func closeSocket(pipe net.Conn) {
-	pipe.Close()
 }
 
 func sendMessage(args []string) (*response, error) {

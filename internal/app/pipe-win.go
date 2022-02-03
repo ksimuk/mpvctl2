@@ -17,3 +17,7 @@ func connectPipe() (*PipeConn, error) {
 func getPlaylistPath() string {
 	return `C:\Tools\mpv.playlist`
 }
+
+func closeSocket(pipe PipeConn) {
+	pipe.Close()
+}
