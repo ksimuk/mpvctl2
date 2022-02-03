@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"os"
 	"strings"
 )
@@ -30,8 +31,13 @@ func getPlaylist(res response) []playlistItem {
 	json.Unmarshal([]byte(data), &playlist)
 	return playlist
 }
+func closeSocket(pipe net.Conn) {
+	pipe.Close()
+}
+
 func sendMessage(args []string) (*response, error) {
 	conn, err := connectPipe()
+
 	if err != nil {
 		return nil, err
 	}
@@ -39,6 +45,7 @@ func sendMessage(args []string) (*response, error) {
 
 	messageJSON, err := json.Marshal(message)
 	if err != nil {
+		closeSocket(conn)
 		return nil, err
 	}
 
@@ -46,12 +53,14 @@ func sendMessage(args []string) (*response, error) {
 	fmt.Fprint(conn, "\n")
 
 	msg, err := bufio.NewReader(conn).ReadString('\n')
+
 	if err != nil {
+		closeSocket(conn)
 		return nil, err
 	}
 	var data response
 	json.Unmarshal([]byte(msg), &data)
-
+	closeSocket(conn)
 	return &data, nil
 }
 
