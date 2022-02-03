@@ -1,6 +1,7 @@
 package app
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"net"
@@ -11,17 +12,26 @@ import (
 
 const PIPE_LINUX = `/tmp/mpv-socket`
 
+func ensureConnect(conn net.Conn) bool {
+	fmt.Fprint(conn, `{"command": ["get_version"]}`)
+	fmt.Fprint(conn, "\n")
+	conn.SetReadDeadline(time.Now().Add(time.Second))
+	_, err := bufio.NewReader(conn).ReadString('\n')
+	return err == nil
+}
+
 func connectPipe() (net.Conn, error) {
 	var err error
-	fmt.Println("1")
 	for i := 1; i < 10; i++ {
 		var conn net.Conn
 		conn, err = net.Dial("unix", PIPE_LINUX)
-		if err == nil {
+		active := ensureConnect(conn)
+		if err == nil && active {
 			return conn, nil
 		}
+		closeSocket(conn)
 		fmt.Println("retrying socket...")
-		time.Sleep(time.Second)
+		time.Sleep(time.Millisecond * 50)
 	}
 
 	return nil, err

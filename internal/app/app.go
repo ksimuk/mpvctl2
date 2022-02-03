@@ -138,16 +138,24 @@ func Main() {
 	case "-5s":
 		_, err := sendMessage([]string{"seek", "-5"})
 		check(err)
+	case "version":
+		res, err := sendMessage([]string{"get_version"})
+		check(err)
+		fmt.Printf("MPV Version: %s\n", res.Data)
 	case "playlist":
-		res, err := sendMessage([]string{"get_property", "playlist"})
+		res, err := sendMessage([]string{`get_property`, `playlist`})
 		check(err)
 		playlist := getPlaylist(*res)
-		for _, item := range playlist {
-			current := " "
-			if item.Current {
-				current = ">"
+		if len(playlist) == 0 {
+			fmt.Printf("Empty Playlist\n")
+		} else {
+			for _, item := range playlist {
+				current := " "
+				if item.Current {
+					current = ">"
+				}
+				fmt.Printf("%s %d. %s\n", current, item.Id, item.Filename)
 			}
-			fmt.Printf("%s %d. %s\n", current, item.Id, item.Filename)
 		}
 	case "save-playlist":
 		res, err := sendMessage([]string{"get_property", "playlist"})
