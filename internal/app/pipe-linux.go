@@ -44,7 +44,7 @@ func getPlaylistPath() string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return filepath.Join(dirname, `mpv_playlist.txt`)
+	return filepath.Join(dirname, `.mpv_playlist.txt`)
 }
 
 func closeSocket(pipe net.Conn) {
