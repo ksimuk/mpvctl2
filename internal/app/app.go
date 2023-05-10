@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"strings"
 )
@@ -138,6 +140,11 @@ func Main() {
 		res, err := sendMessage([]string{"get_version"})
 		check(err)
 		fmt.Printf("MPV Version: %s\n", res.Data)
+	case "server":
+		http.HandleFunc("/", getRoot)
+
+		err := http.ListenAndServe("127.0.0.1:7531", nil)
+		check(err)
 	case "playlist":
 		res, err := sendMessage([]string{`get_property`, `playlist`})
 		check(err)
@@ -168,8 +175,18 @@ func Main() {
 		}
 	case "start":
 		run()
+	case "quit":
+		_, err := sendMessage([]string{"get_property", "playlist"})
+		check(err)
 	default:
 		fmt.Printf("%s not supported\n", args[0])
 	}
 
+}
+
+func getRoot(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("got / request\n")
+	play_url := r.URL.Query().Get(`play_url`)
+	sendMessage([]string{"loadfile", play_url, "append-play"})
+	io.WriteString(w, "Done!\n")
 }
